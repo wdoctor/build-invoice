@@ -170,6 +170,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
     </header>
+
     <main id="main" class="layout">
       <section class="panel form-panel" aria-labelledby="editor-title">
         <div class="panel-heading">
@@ -179,6 +180,7 @@
           </div>
           <span class="status-pill">Ready to export</span>
         </div>
+
         <div class="grid two">
           <div class="field">
             <label for="invoiceNumber">Invoice #</label>
@@ -202,6 +204,7 @@
             </select>
           </div>
         </div>
+
         <div class="grid two">
           <div class="field">
             <label for="fromName">From</label>
@@ -218,6 +221,7 @@ Waldorf, MD 20601
 United States</textarea>
           </div>
         </div>
+
         <div class="grid two">
           <div class="field">
             <label for="clientName">Bill to</label>
@@ -234,6 +238,7 @@ Suite 12
 Washington, DC 20001</textarea>
           </div>
         </div>
+
         <div class="field">
           <div class="panel-heading" style="align-items:center;">
             <div>
@@ -245,6 +250,7 @@ Washington, DC 20001</textarea>
           <div id="lineItems" class="line-items"></div>
           <button class="secondary-btn" type="button" id="addItemBottom">Add item</button>
         </div>
+
         <div class="grid two">
           <div class="field">
             <label for="taxRate">Tax %</label>
@@ -256,16 +262,19 @@ Washington, DC 20001</textarea>
             <small>Flat amount in the chosen currency.</small>
           </div>
         </div>
+
         <div class="field">
           <label for="notes">Notes</label>
           <textarea id="notes">Thanks for your business. Payment is due within 14 days. Please include the invoice number with your payment.</textarea>
         </div>
+
         <div class="summary" aria-live="polite">
           <div class="summary-row"><span>Subtotal</span><strong id="subtotalText">$0.00</strong></div>
           <div class="summary-row"><span>Tax</span><strong id="taxText">$0.00</strong></div>
           <div class="summary-row"><span>Discount</span><strong id="discountText">$0.00</strong></div>
           <div class="summary-row total"><span>Total</span><strong id="totalText">$0.00</strong></div>
         </div>
+
         <div class="action-bar">
           <button class="primary-btn" type="button" id="savePdfBtn">Save as PDF</button>
           <button class="secondary-btn" type="button" id="sharePdfBtn">Share PDF</button>
@@ -274,6 +283,7 @@ Washington, DC 20001</textarea>
         </div>
         <p class="hint">On iPhone, after the PDF is created you can save it to Files or share it through the iOS share sheet.</p>
       </section>
+
       <section class="panel preview-panel" aria-labelledby="preview-title">
         <div class="panel-heading">
           <div>
@@ -322,6 +332,7 @@ Washington, DC 20001</textarea>
                 </div>
               </div>
             </header>
+
             <table class="invoice-table" aria-label="Invoice line items table">
               <thead>
                 <tr>
@@ -333,6 +344,7 @@ Washington, DC 20001</textarea>
               </thead>
               <tbody id="previewItems"></tbody>
             </table>
+
             <footer class="invoice-footer">
               <div class="notes-card">
                 <div class="eyebrow">Notes</div>
@@ -350,7 +362,9 @@ Washington, DC 20001</textarea>
       </section>
     </main>
   </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <template id="itemTemplate">
     <div class="line-item">
       <div class="line-item-head">
@@ -377,6 +391,7 @@ Washington, DC 20001</textarea>
       </div>
     </div>
   </template>
+
   <script>
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -384,6 +399,7 @@ Washington, DC 20001</textarea>
     const lineItems = $('#lineItems');
     const toast = $('#toast');
     const htmlRoot = document.documentElement;
+
     const initialState = {
       invoiceNumber: 'INV-1001',
       fromName: 'Your Business Name',
@@ -401,6 +417,7 @@ Washington, DC 20001</textarea>
         { desc: 'Project planning', qty: 2, rate: 85 }
       ]
     };
+
     function setDefaultDates() {
       const today = new Date();
       const due = new Date();
@@ -408,12 +425,14 @@ Washington, DC 20001</textarea>
       $('#invoiceDate').value = today.toISOString().split('T')[0];
       $('#dueDate').value = due.toISOString().split('T')[0];
     }
+
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add('show');
       clearTimeout(showToast.timer);
       showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
     }
+
     function formatMoney(value) {
       const currency = $('#currency').value || 'USD';
       try {
@@ -422,36 +441,67 @@ Washington, DC 20001</textarea>
         return `${currency} ${Number(value || 0).toFixed(2)}`;
       }
     }
+
     function formatDate(value) {
       if (!value) return '—';
       const date = new Date(value + 'T12:00:00');
       return new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
     }
+
     function escapeHtml(value) {
       return String(value || '').replace(/[&<>\"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
     }
+
     function multilineToHtml(value) {
       return escapeHtml(value).replace(/\n/g, '<br>');
     }
+
     function createItem(item = { desc: 'New item', qty: 1, rate: 0 }) {
       const node = itemTemplate.content.firstElementChild.cloneNode(true);
       node.querySelector('.item-desc').value = item.desc;
       node.querySelector('.item-qty').value = item.qty;
-      node.querySelector('.item-rate').value = item.rate;
       node.querySelector('.item-rate').value = item.rate || '';
       node.querySelector('.remove-item').addEventListener('click', () => {
         if ($$('.line-item').length === 1) {
           node.querySelector('.item-desc').value = '';
           node.querySelector('.item-qty').value = '1';
-          node.querySelector('.item-rate').value = '0';
           node.querySelector('.item-rate').value = '';
         } else {
           node.remove();
         }
+        render();
+      });
+      node.querySelectorAll('input').forEach((input) => input.addEventListener('input', render));
+      lineItems.appendChild(node);
+      render();
+    }
+
+    function resetForm() {
+      $('#invoiceNumber').value = initialState.invoiceNumber;
+      $('#fromName').value = initialState.fromName;
+      $('#fromEmail').value = initialState.fromEmail;
+      $('#fromAddress').value = initialState.fromAddress;
+      $('#clientName').value = initialState.clientName;
+      $('#clientEmail').value = initialState.clientEmail;
+      $('#clientAddress').value = initialState.clientAddress;
+      $('#notes').value = initialState.notes;
+      $('#taxRate').value = initialState.taxRate;
+      $('#discount').value = initialState.discount;
+      $('#currency').value = initialState.currency;
+      lineItems.innerHTML = '';
+      initialState.items.forEach(createItem);
+      setDefaultDates();
+      render();
+      showToast('Sample invoice restored');
+    }
+
+    function computeTotals() {
+      let subtotal = 0;
+      const items = $$('.line-item').map((item) => {
+        const desc = item.querySelector('.item-desc').value.trim() || 'Untitled item';
         const qty = parseFloat(item.querySelector('.item-qty').value) || 0;
         const rate = parseFloat(item.querySelector('.item-rate').value) || 0;
         const total = qty * rate;
-        item.querySelector('.item-total').textContent = formatMoney(total);
         item.querySelector('.item-total').textContent = total ? formatMoney(total) : '';
         subtotal += total;
         return { desc, qty, rate, total };
@@ -462,6 +512,7 @@ Washington, DC 20001</textarea>
       const total = Math.max(0, subtotal + tax - discount);
       return { items, subtotal, taxRate, tax, discount, total };
     }
+
     function render() {
       const totals = computeTotals();
       $('#previewFromName').textContent = $('#fromName').value || 'Your Business Name';
@@ -474,10 +525,8 @@ Washington, DC 20001</textarea>
       $('#previewNotes').textContent = $('#notes').value || 'Thank you.';
       $('#previewItems').innerHTML = totals.items.map((item, index) => `
         <tr>
-          <td>${escapeHtml(item.desc)}</td>
+          <td>${index > 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;' : ''}${escapeHtml(item.desc)}</td>
           <td>${item.qty}</td>
-          <td>${index === 0 ? formatMoney(item.rate) : ''}</td>
-          <td>${index === 0 ? formatMoney(item.total) : ''}</td>
           <td>${(index === 0 && item.rate) ? formatMoney(item.rate) : ''}</td>
           <td>${(index === 0 && item.total) ? formatMoney(item.total) : ''}</td>
         </tr>
@@ -491,6 +540,7 @@ Washington, DC 20001</textarea>
       $('#previewDiscount').textContent = formatMoney(totals.discount);
       $('#previewTotal').textContent = formatMoney(totals.total);
     }
+
     async function buildPdfBlob() {
       const preview = $('#invoicePreview');
       const canvas = await html2canvas(preview, {
@@ -518,6 +568,7 @@ Washington, DC 20001</textarea>
       }
       return pdf.output('blob');
     }
+
     async function downloadPdf(shareIfPossible = false) {
       if (!window.jspdf || !window.html2canvas) {
         showToast('PDF tools are still loading');
@@ -546,6 +597,7 @@ Washington, DC 20001</textarea>
         showToast('Could not create PDF');
       }
     }
+
     $('#addItemTop').addEventListener('click', () => createItem({ desc: 'New service', qty: 1, rate: 0 }));
     $('#addItemBottom').addEventListener('click', () => createItem({ desc: 'New service', qty: 1, rate: 0 }));
     $('#savePdfBtn').addEventListener('click', () => downloadPdf(false));
@@ -554,6 +606,7 @@ Washington, DC 20001</textarea>
     $('#resetBtn').addEventListener('click', resetForm);
     $$('input, textarea, select').forEach((field) => field.addEventListener('input', render));
     $$('input, textarea, select').forEach((field) => field.addEventListener('change', render));
+
     (function initThemeToggle() {
       const toggle = document.querySelector('[data-theme-toggle]');
       let currentTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -570,6 +623,7 @@ Washington, DC 20001</textarea>
           : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
       });
     })();
+
     resetForm();
   </script>
 </body>
