@@ -501,10 +501,10 @@ Washington, DC 20001</textarea>
         <tr>
           <td>${escapeHtml(item.desc)}</td>
           <td>${item.qty}</td>
+          <td>${item.rate === 0 || !item.rate ? '' : formatMoney(item.rate)}</td>
+          <td>${item.total === 0 || !item.total ? '' : formatMoney(item.total)}</td>
           <td>${formatMoney(item.rate)}</td>
           <td>${formatMoney(item.total)}</td>
-          <td>${item.rate === 0 || !item.rate ? '' : formatMoney(item.rate)}</td>
-          <td>${(item.rate === 0 || !item.rate) && item.total === 0 ? '' : formatMoney(item.total)}</td>
         </tr>
       `).join('');
       $('#subtotalText').textContent = formatMoney(totals.subtotal);
