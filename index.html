@@ -498,14 +498,13 @@ Washington, DC 20001</textarea>
       $('#previewClientBlock').innerHTML = `<strong>${escapeHtml($('#clientName').value || 'Client Name')}</strong><br>${escapeHtml($('#clientEmail').value || '')}<br>${multilineToHtml($('#clientAddress').value || '')}`;
       $('#previewNotes').textContent = $('#notes').value || 'Thank you.';
       $('#previewItems').innerHTML = totals.items.map((item) => `
-      $('#previewItems').innerHTML = totals.items.map((item, index) => `
         <tr>
           <td>${escapeHtml(item.desc)}</td>
           <td>${item.qty}</td>
+          <td>${item.rate === 0 || !item.rate ? '' : formatMoney(item.rate)}</td>
+          <td>${item.total === 0 || !item.total ? '' : formatMoney(item.total)}</td>
           <td>${formatMoney(item.rate)}</td>
           <td>${formatMoney(item.total)}</td>
-          <td>${index === 0 ? formatMoney(item.rate) : ''}</td>
-          <td>${index === 0 ? formatMoney(item.total) : ''}</td>
         </tr>
       `).join('');
       $('#subtotalText').textContent = formatMoney(totals.subtotal);
