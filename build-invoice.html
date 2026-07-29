@@ -115,7 +115,7 @@
     .eyebrow { color: #6b7280; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem; }
     .invoice-table { width: 100%; margin-top: 1rem; border-collapse: collapse; }
     .invoice-table th, .invoice-table td { padding: 0.8rem 0.4rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 0.95rem; vertical-align: top; }
-    .invoice-table th:last-child, .invoice-table td:last-child, .invoice-table th:nth-last-child(2), .invoice-table td:nth-last-child(2), .invoice-table th:nth-last-child(3), .invoice-table td:nth-last-child(3) { text-align: right; }
+    .invoice-table th:last-child, .invoice-table td:last-child { text-align: right; }
     .invoice-footer { display: grid; gap: 1rem; margin-top: 1.25rem; }
     .notes-card { background: #f8fafc; border-radius: 14px; padding: 1rem; }
     .totals-box { margin-left: auto; width: min(100%, 280px); background: #0f172a; color: #f8fafc; border-radius: 18px; padding: 1rem; display: grid; gap: 0.7rem; }
@@ -208,17 +208,16 @@
         <div class="grid two">
           <div class="field">
             <label for="fromName">From</label>
-            <input id="fromName" value="Your Business Name" />
+            <input id="fromName" value="Vyvid Decor LLC" />
           </div>
           <div class="field">
             <label for="fromEmail">Your email</label>
-            <input id="fromEmail" type="email" value="hello@yourbusiness.com" />
+            <input id="fromEmail" type="email" value="vyviddecor@gmail.com" />
           </div>
           <div class="field" style="grid-column: 1 / -1;">
             <label for="fromAddress">Your address</label>
-            <textarea id="fromAddress">123 Main Street
-Waldorf, MD 20601
-United States</textarea>
+            <textarea id="fromAddress">12400 Southington Drive
+Woodbridge, VA 22192</textarea>
           </div>
         </div>
 
@@ -233,9 +232,7 @@ United States</textarea>
           </div>
           <div class="field" style="grid-column: 1 / -1;">
             <label for="clientAddress">Client address</label>
-            <textarea id="clientAddress">456 Client Avenue
-Suite 12
-Washington, DC 20001</textarea>
+            <textarea id="clientAddress"></textarea>
           </div>
         </div>
 
@@ -264,19 +261,29 @@ Washington, DC 20001</textarea>
         </div>
 
         <div class="field">
+          <label for="paymentsReceived">Payments Received</label>
+          <input id="paymentsReceived" type="number" inputmode="decimal" min="0" step="0.01" value="0" />
+        </div>
+
+        <div class="field">
           <label for="notes">Notes</label>
-          <textarea id="notes">Thanks for your business. Payment is due within 14 days. Please include the invoice number with your payment.</textarea>
+          <textarea id="notes">All items are provided on a rental basis. In the event of loss or damage, a replacement or repair fee will be charged. All payments are non-refundable. Final payment is due no later than 24 hours prior to the event date. Zelle: 571-432-9449. A 3.9% processing fee applies to all PayPal and card transactions - Thank you for choosing Vyvid Decor!</textarea>
         </div>
 
         <div class="summary" aria-live="polite">
           <div class="summary-row"><span>Subtotal</span><strong id="subtotalText">$0.00</strong></div>
           <div class="summary-row"><span>Tax</span><strong id="taxText">$0.00</strong></div>
           <div class="summary-row"><span>Discount</span><strong id="discountText">$0.00</strong></div>
-          <div class="summary-row total"><span>Total</span><strong id="totalText">$0.00</strong></div>
+          <div class="summary-row total"><span>Total Invoice Amount</span><strong id="totalText">$0.00</strong></div>
+          <div class="summary-row"><span>Payments Received</span><strong id="paymentsReceivedText">$0.00</strong></div>
+          <div class="summary-row total"><span>Balance Due</span><strong id="balanceText">$0.00</strong></div>
         </div>
 
         <div class="action-bar">
           <button class="primary-btn" type="button" id="savePdfBtn">Save as PDF</button>
+          <button class="secondary-btn" type="button" id="saveCsvBtn">Save as CSV</button>
+          <label class="secondary-btn" for="importCsvInput" style="display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin: 0;">Import CSV</label>
+          <input type="file" id="importCsvInput" accept=".csv" style="display: none;" />
           <button class="secondary-btn" type="button" id="sharePdfBtn">Share PDF</button>
           <button class="secondary-btn" type="button" id="printBtn">Print</button>
           <button class="secondary-btn" type="button" id="resetBtn">Reset sample</button>
@@ -338,23 +345,23 @@ Washington, DC 20001</textarea>
                 <tr>
                   <th>Description</th>
                   <th>Qty</th>
-                  <th>Rate</th>
-                  <th>Amount</th>
                 </tr>
               </thead>
               <tbody id="previewItems"></tbody>
             </table>
 
             <footer class="invoice-footer">
-              <div class="notes-card">
-                <div class="eyebrow">Notes</div>
-                <p id="previewNotes">Thanks for your business.</p>
-              </div>
               <div class="totals-box">
                 <div class="row"><span>Subtotal</span><strong id="previewSubtotal">$0.00</strong></div>
                 <div class="row"><span>Tax</span><strong id="previewTax">$0.00</strong></div>
                 <div class="row"><span>Discount</span><strong id="previewDiscount">$0.00</strong></div>
-                <div class="row total"><span>Total</span><strong id="previewTotal">$0.00</strong></div>
+                <div class="row total"><span>Total Invoice Amount</span><strong id="previewTotal">$0.00</strong></div>
+                <div class="row"><span>Payments Received</span><strong id="previewPaymentsReceived">$0.00</strong></div>
+                <div class="row total"><span>Balance Due</span><strong id="previewBalance">$0.00</strong></div>
+              </div>
+              <div class="notes-card">
+                <div class="eyebrow">Notes</div>
+                <p id="previewNotes">Thanks for your business.</p>
               </div>
             </footer>
           </article>
@@ -402,15 +409,16 @@ Washington, DC 20001</textarea>
 
     const initialState = {
       invoiceNumber: 'INV-1001',
-      fromName: 'Your Business Name',
-      fromEmail: 'hello@yourbusiness.com',
-      fromAddress: '123 Main Street\nWaldorf, MD 20601\nUnited States',
+      fromName: 'Vyvid Decor LLC',
+      fromEmail: 'vyviddecor@gmail.com',
+      fromAddress: '12400 Southington Drive\nWoodbridge, VA 22192',
       clientName: 'Client Name',
       clientEmail: 'client@example.com',
-      clientAddress: '456 Client Avenue\nSuite 12\nWashington, DC 20001',
-      notes: 'Thanks for your business. Payment is due within 14 days. Please include the invoice number with your payment.',
+      clientAddress: '',
+      notes: 'All items are provided on a rental basis. In the event of loss or damage, a replacement or repair fee will be charged. All payments are non-refundable. Final payment is due no later than 24 hours prior to the event date. Zelle: 571-432-9449. A 3.9% processing fee applies to all PayPal and card transactions - Thank you for choosing Vyvid Decor!',
       taxRate: '0',
       discount: '0',
+      paymentsReceived: '0',
       currency: 'USD',
       items: [
         { desc: 'Consulting session', qty: 1, rate: 150 },
@@ -487,6 +495,7 @@ Washington, DC 20001</textarea>
       $('#notes').value = initialState.notes;
       $('#taxRate').value = initialState.taxRate;
       $('#discount').value = initialState.discount;
+      $('#paymentsReceived').value = initialState.paymentsReceived;
       $('#currency').value = initialState.currency;
       lineItems.innerHTML = '';
       initialState.items.forEach(createItem);
@@ -508,9 +517,11 @@ Washington, DC 20001</textarea>
       });
       const taxRate = Math.max(0, parseFloat($('#taxRate').value) || 0);
       const discount = Math.max(0, parseFloat($('#discount').value) || 0);
+      const paymentsReceived = Math.max(0, parseFloat($('#paymentsReceived').value) || 0);
       const tax = subtotal * (taxRate / 100);
       const total = Math.max(0, subtotal + tax - discount);
-      return { items, subtotal, taxRate, tax, discount, total };
+      const balance = total - paymentsReceived;
+      return { items, subtotal, taxRate, tax, discount, paymentsReceived, total, balance };
     }
 
     function render() {
@@ -525,20 +536,22 @@ Washington, DC 20001</textarea>
       $('#previewNotes').textContent = $('#notes').value || 'Thank you.';
       $('#previewItems').innerHTML = totals.items.map((item, index) => `
         <tr>
-          <td>${index > 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;' : ''}${escapeHtml(item.desc)}</td>
+          <td>${escapeHtml(item.desc)}</td>
           <td>${item.qty}</td>
-          <td>${(index === 0 && item.rate) ? formatMoney(item.rate) : ''}</td>
-          <td>${(index === 0 && item.total) ? formatMoney(item.total) : ''}</td>
         </tr>
       `).join('');
       $('#subtotalText').textContent = formatMoney(totals.subtotal);
       $('#taxText').textContent = `${formatMoney(totals.tax)}${totals.taxRate ? ` (${totals.taxRate}%)` : ''}`;
       $('#discountText').textContent = formatMoney(totals.discount);
       $('#totalText').textContent = formatMoney(totals.total);
+      $('#paymentsReceivedText').textContent = formatMoney(totals.paymentsReceived);
+      $('#balanceText').textContent = formatMoney(totals.balance);
       $('#previewSubtotal').textContent = formatMoney(totals.subtotal);
       $('#previewTax').textContent = formatMoney(totals.tax);
       $('#previewDiscount').textContent = formatMoney(totals.discount);
       $('#previewTotal').textContent = formatMoney(totals.total);
+      $('#previewPaymentsReceived').textContent = formatMoney(totals.paymentsReceived);
+      $('#previewBalance').textContent = formatMoney(totals.balance);
     }
 
     async function buildPdfBlob() {
@@ -551,7 +564,7 @@ Washington, DC 20001</textarea>
       });
       const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+      const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'legal' });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = pdfWidth;
@@ -598,9 +611,111 @@ Washington, DC 20001</textarea>
       }
     }
 
+    function escapeCsv(str) {
+      if (str === null || str === undefined) return '""';
+      const escaped = String(str).replace(/"/g, '""');
+      return `"${escaped}"`;
+    }
+
+    function downloadCsv() {
+      const totals = computeTotals();
+      const invoiceNum = escapeCsv($('#invoiceNumber').value);
+      const date = escapeCsv($('#invoiceDate').value);
+      const clientName = escapeCsv($('#clientName').value);
+      const taxRate = totals.taxRate;
+      const discount = totals.discount;
+      const payments = totals.paymentsReceived;
+      const invoiceTotal = totals.total;
+      const balance = totals.balance;
+
+      let csv = "Invoice Number,Date,Client Name,Item Description,Qty,Rate,Amount,Tax Rate,Discount,Payments Received,Invoice Total,Balance\n";
+
+      totals.items.forEach(item => {
+        csv += `${invoiceNum},${date},${clientName},${escapeCsv(item.desc)},${item.qty},${item.rate},${item.total},${taxRate},${discount},${payments},${invoiceTotal},${balance}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const filename = `${($('#invoiceNumber').value || 'invoice').replace(/[^a-z0-9-_]+/gi, '-')}.csv`;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showToast('CSV saved. Check Downloads or Files.');
+    }
+
+    function parseCsvLine(text) {
+      const result = [];
+      let inQuotes = false;
+      let currentVal = "";
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === '"') {
+          if (inQuotes && text[i+1] === '"') {
+            currentVal += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          result.push(currentVal);
+          currentVal = "";
+        } else {
+          currentVal += char;
+        }
+      }
+      result.push(currentVal);
+      return result;
+    }
+
+    function importCsv(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
+        if (lines.length < 2) {
+          showToast('CSV is empty or invalid.');
+          return;
+        }
+        const headers = parseCsvLine(lines[0]);
+        const map = {};
+        headers.forEach((h, i) => map[h.trim()] = i);
+        
+        const firstRow = parseCsvLine(lines[1]);
+        if (map['Invoice Number'] !== undefined) $('#invoiceNumber').value = firstRow[map['Invoice Number']] || '';
+        if (map['Date'] !== undefined) $('#invoiceDate').value = firstRow[map['Date']] || '';
+        if (map['Client Name'] !== undefined) $('#clientName').value = firstRow[map['Client Name']] || '';
+        if (map['Tax Rate'] !== undefined) $('#taxRate').value = firstRow[map['Tax Rate']] || 0;
+        if (map['Discount'] !== undefined) $('#discount').value = firstRow[map['Discount']] || 0;
+        if (map['Payments Received'] !== undefined) $('#paymentsReceived').value = firstRow[map['Payments Received']] || 0;
+        
+        lineItems.innerHTML = '';
+        
+        for (let i = 1; i < lines.length; i++) {
+          const row = parseCsvLine(lines[i]);
+          createItem({
+            desc: row[map['Item Description']] || '',
+            qty: parseFloat(row[map['Qty']]) || 1,
+            rate: parseFloat(row[map['Rate']]) || 0
+          });
+        }
+        
+        showToast('Invoice imported successfully.');
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
     $('#addItemTop').addEventListener('click', () => createItem({ desc: 'New service', qty: 1, rate: 0 }));
     $('#addItemBottom').addEventListener('click', () => createItem({ desc: 'New service', qty: 1, rate: 0 }));
     $('#savePdfBtn').addEventListener('click', () => downloadPdf(false));
+    $('#saveCsvBtn').addEventListener('click', downloadCsv);
+    $('#importCsvInput').addEventListener('change', importCsv);
     $('#sharePdfBtn').addEventListener('click', () => downloadPdf(true));
     $('#printBtn').addEventListener('click', () => window.print());
     $('#resetBtn').addEventListener('click', resetForm);
